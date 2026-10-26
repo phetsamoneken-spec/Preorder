@@ -2123,55 +2123,58 @@
           <div className="relative w-full rounded-2xl overflow-hidden border border-emerald-900/15 shadow-sm">
             <div ref={mapContainerRef} style={{ height }} className="w-full bg-[#1b232a]" />
 
-            <div className="absolute top-2 left-2 z-[30] flex flex-col gap-1 pointer-events-none">
-              <div className="bg-black/85 backdrop-blur-md text-white text-[11px] font-display font-medium px-2.5 py-1 rounded-full shadow-md flex items-center gap-1.5 border border-white/20">
-                {isLiveMode ? (
-                  <span className="flex items-center gap-1 text-[#4edea3] font-bold">
-                    <span className="w-2 h-2 rounded-full bg-[#10b981] animate-ping inline-block"></span>
-                    <span>LIVE ສົດ</span>
-                  </span>
-                ) : (
-                  <span className="w-2 h-2 rounded-full bg-[#10b981]"></span>
-                )}
-                <span>{Number(lat).toFixed(5)}, {Number(lng).toFixed(5)}</span>
-                {liveAccuracy && (
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                    liveAccuracy <= 20 ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'
-                  }`}>
-                    ±{liveAccuracy}m
-                  </span>
+            {/* Top Bar Overlay: Unified Flex Container preventing any overlap */}
+            <div className="absolute top-2 inset-x-2 z-[30] flex items-center justify-between gap-1.5 pointer-events-none">
+              <div className="flex flex-col gap-1 pointer-events-auto min-w-0 max-w-[62%]">
+                <div className="bg-black/85 backdrop-blur-md text-white text-[10px] font-display font-medium px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-white/20 min-w-0">
+                  {isLiveMode ? (
+                    <span className="flex items-center gap-1 text-[#4edea3] font-bold shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-ping inline-block"></span>
+                      <span>LIVE</span>
+                    </span>
+                  ) : (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] shrink-0"></span>
+                  )}
+                  <span className="truncate">{Number(lat).toFixed(4)}, {Number(lng).toFixed(4)}</span>
+                  {liveAccuracy && (
+                    <span className={`text-[9px] px-1 py-0.2 rounded-full font-bold shrink-0 ${
+                      liveAccuracy <= 20 ? 'bg-emerald-600 text-white' : 'bg-amber-600 text-white'
+                    }`}>
+                      ±{liveAccuracy}m
+                    </span>
+                  )}
+                </div>
+
+                {isLiveMode && (
+                  <div className="bg-emerald-950/90 text-emerald-200 text-[9px] px-2 py-0.5 rounded-lg border border-emerald-500/40 font-display flex items-center gap-1.5 truncate">
+                    <span>ຄວາມໄວ: <strong>{liveSpeed || 0} km/h</strong></span>
+                    {lastUpdateTime && <span className="truncate">• {lastUpdateTime}</span>}
+                  </div>
                 )}
               </div>
 
-              {isLiveMode && (
-                <div className="bg-emerald-950/90 text-emerald-200 text-[10px] px-2 py-0.5 rounded-lg border border-emerald-500/40 font-display flex items-center gap-2">
-                  <span>ຄວາມໄວ: <strong>{liveSpeed || 0} km/h</strong></span>
-                  {lastUpdateTime && <span>• {lastUpdateTime}</span>}
-                </div>
-              )}
-            </div>
-
-            <div className="absolute top-2 right-2 z-[30] bg-white/95 backdrop-blur-md p-0.5 rounded-xl shadow-md border border-black/10 flex items-center">
-              <button
-                type="button"
-                onClick={() => setMapType('street')}
-                className={`px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all ${
-                  mapType === 'street' ? 'bg-[#006c49] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[14px]">map</span>
-                <span>ແຜນທີ່</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setMapType('satellite')}
-                className={`px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-all ${
-                  mapType === 'satellite' ? 'bg-[#006c49] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span className="material-symbols-outlined text-[14px]">satellite_alt</span>
-                <span>ດາວທຽມ</span>
-              </button>
+              <div className="bg-white/95 backdrop-blur-md p-0.5 rounded-xl shadow-md border border-black/10 flex items-center shrink-0 pointer-events-auto ml-auto">
+                <button
+                  type="button"
+                  onClick={() => setMapType('street')}
+                  className={`px-2 py-1 rounded-lg text-[10.5px] font-bold flex items-center gap-1 transition-all ${
+                    mapType === 'street' ? 'bg-[#006c49] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[13px]">map</span>
+                  <span>ແຜນທີ່</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapType('satellite')}
+                  className={`px-2 py-1 rounded-lg text-[10.5px] font-bold flex items-center gap-1 transition-all ${
+                    mapType === 'satellite' ? 'bg-[#006c49] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[13px]">satellite_alt</span>
+                  <span>ດາວທຽມ</span>
+                </button>
+              </div>
             </div>
 
             <div className="absolute bottom-2 inset-x-2 z-[30] flex items-center justify-between gap-1.5 pointer-events-auto">
@@ -6419,49 +6422,63 @@
             </div>
 
             {/* Google Sheet Menu Sync Bar */}
-            <div className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-2xl p-2.5 mb-3 flex items-center justify-between gap-2 shadow-2xs">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-white text-[#006c49] flex items-center justify-center font-bold shadow-2xs shrink-0 border border-[#a7f3d0]/60">
-                  <span className="material-symbols-outlined text-[18px]">table_chart</span>
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-[#006c49]">Google Sheet: ແທັບ "Menu"</span>
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            <div className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-2xl p-3 mb-3 flex flex-col gap-2.5 shadow-2xs">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-white text-[#006c49] flex items-center justify-center font-bold shadow-2xs shrink-0 border border-[#a7f3d0]/60">
+                    <span className="material-symbols-outlined text-[18px]">table_chart</span>
                   </div>
-                  <p className="text-[11px] text-[#005236] truncate">ບັນທຶກເມນູ & ຮູບພາບລົງ Google Drive & Sheet ອັດຕະໂນມັດ 📸</p>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-[#006c49]">Google Sheet: ແທັບ "Menu"</span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                    </div>
+                    <p className="text-[11px] text-[#005236] truncate">ບັນທຶກເມນູ & ຮູບພາບລົງ Google Drive & Sheet ອັດຕະໂນມັດ 📸</p>
+                  </div>
                 </div>
+                <a
+                  href={GOOGLE_SHEET_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-[#0f9d58] font-bold hover:underline flex items-center gap-0.5 shrink-0"
+                  title="ເປີດ Google Sheet ໂດຍກົງ"
+                >
+                  <span>ເປີດ Sheet</span>
+                  <span className="material-symbols-outlined text-[13px]">open_in_new</span>
+                </a>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
+
+              {/* 3 Action Buttons in a dedicated responsive grid */}
+              <div className="grid grid-cols-3 gap-1.5 w-full">
                 <button
                   type="button"
                   onClick={handleSyncDriveImages}
                   disabled={isSyncingDrive}
-                  className="py-1.5 px-2.5 bg-gradient-to-r from-emerald-600 to-[#006c49] hover:from-emerald-700 hover:to-[#005236] text-white rounded-xl text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-xs"
+                  className="py-1.5 px-1 bg-gradient-to-r from-emerald-600 to-[#006c49] hover:from-emerald-700 hover:to-[#005236] text-white rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-xs"
                   title="ດຶງຮູບຈາກ Google Drive ໂຟນເດີ 'order app' ມາຈັບຄູ່ກັບເມນູອາຫານໂດຍອັດຕະໂນມັດ"
                 >
-                  <span className={`material-symbols-outlined text-[14px] ${isSyncingDrive ? 'animate-spin' : ''}`}>cloud_sync</span>
-                  <span>{isSyncingDrive ? 'ກຳລັງດຶງຮູບ...' : '🔄 ດຶງຮູບຈາກ Drive'}</span>
+                  <span className={`material-symbols-outlined text-[14px] shrink-0 ${isSyncingDrive ? 'animate-spin' : ''}`}>cloud_sync</span>
+                  <span className="truncate">{isSyncingDrive ? 'ກຳລັງດຶງ...' : 'ດຶງຮູບ Drive'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleReloadMenuFromSheet}
                   disabled={isReloadingMenu}
-                  className="py-1.5 px-2.5 bg-white hover:bg-emerald-50 text-[#006c49] border border-[#a7f3d0] disabled:opacity-50 rounded-xl text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-2xs"
+                  className="py-1.5 px-1 bg-white hover:bg-emerald-50 text-[#006c49] border border-[#a7f3d0] disabled:opacity-50 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-2xs"
                   title="ດຶງເມນູຫຼ້າສຸດຈາກ Google Sheet"
                 >
-                  <span className={`material-symbols-outlined text-[14px] ${isReloadingMenu ? 'animate-spin' : ''}`}>download</span>
-                  <span>{isReloadingMenu ? 'ກຳລັງດຶງ...' : 'ດຶງຈາກ Sheet'}</span>
+                  <span className={`material-symbols-outlined text-[14px] shrink-0 ${isReloadingMenu ? 'animate-spin' : ''}`}>download</span>
+                  <span className="truncate">{isReloadingMenu ? 'ກຳລັງດຶງ...' : 'ດຶງຈາກ Sheet'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleSyncMenuToGoogleSheet}
                   disabled={isSyncingMenu}
-                  className="py-1.5 px-2.5 bg-[#006c49] hover:bg-[#005236] disabled:opacity-50 text-white rounded-xl text-[11px] font-bold flex items-center gap-1 active:scale-95 transition-all shadow-xs"
+                  className="py-1.5 px-1 bg-[#006c49] hover:bg-[#005236] disabled:opacity-50 text-white rounded-xl text-[11px] font-bold flex items-center justify-center gap-1 active:scale-95 transition-all shadow-xs"
                   title="ກົດເພື່ອຊິ້ງເມນູອາຫານ ແລະ ຮູບພາບລົງ Google Drive & Sheet ດຽວນີ້"
                 >
-                  <span className={`material-symbols-outlined text-[14px] ${isSyncingMenu ? 'animate-spin' : ''}`}>sync</span>
-                  <span>{isSyncingMenu ? 'ກຳລັງຊິ້ງ...' : 'ຊິ້ງລົງ Sheet'}</span>
+                  <span className={`material-symbols-outlined text-[14px] shrink-0 ${isSyncingMenu ? 'animate-spin' : ''}`}>sync</span>
+                  <span className="truncate">{isSyncingMenu ? 'ກຳລັງຊິ້ງ...' : 'ຊິ້ງລົງ Sheet'}</span>
                 </button>
               </div>
             </div>
