@@ -9,20 +9,35 @@
     <title>ລະບົບ POS & ສົ່ງອໍເດີ WhatsApp + Google Sheet</title>
     <meta name="description" content="ລະບົບ POS ຮ້ານຄ້າລາວ ບັນທຶກລົງ Google Sheet ID: 12CV_NOtFAsj9xZ6LnzzEqi5PjbPPVegOpFOC9B8m7gY" />
 
-    <!-- PWA & Desktop App Icon Setup (Beerlao Style App Icon) -->
-    <meta name="theme-color" content="#fbb315" />
+    <!-- Progressive Web App (PWA) Setup -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#FFC400" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Beerlao POS" />
     <meta name="application-name" content="Beerlao POS" />
 
-    <!-- App Icon & Favicon for Desktop & Mobile -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23fbb315'/><path d='M15 45 Q50 35 85 45 L85 62 Q50 52 15 62 Z' fill='%23ffffff'/><text x='50' y='57' font-family='sans-serif' font-weight='900' font-size='16' fill='%23006c49' text-anchor='middle'>Beerlao</text></svg>" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23fbb315'/><path d='M15 45 Q50 35 85 45 L85 62 Q50 52 15 62 Z' fill='%23ffffff'/><text x='50' y='57' font-family='sans-serif' font-weight='900' font-size='16' fill='%23006c49' text-anchor='middle'>Beerlao</text></svg>" />
+    <!-- App Icons & Favicons for Android, iOS & Desktop -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="shortcut icon" href="./favicon.ico" />
 
-    <!-- Web App Manifest for Desktop & Mobile Installation -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Beerlao%20POS%20%E0%BA%A5%E0%BA%B0%E0%BA%9A%E0%BA%BB%E0%BA%9A%E0%BA%82%E0%BA%B2%E0%BA%81%E0%BA%AB%E0%BA%99%E0%BB%89%E0%BA%B2%E0%BA%AE%E0%BB%89%E0%BA%B2%E0%BA%99%22%2C%22short_name%22%3A%22Beerlao%20POS%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23faf8ff%22%2C%22theme_color%22%3A%22%23fbb315%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Crect%20width%3D'100'%20height%3D'100'%20rx%3D'25'%20fill%3D'%23fbb315'%2F%3E%3Cpath%20d%3D'M15%2045%20Q50%2035%2085%2045%20L85%2062%20Q50%2052%2015%2062%20Z'%20fill%3D'%23ffffff'%2F%3E%3Ctext%20x%3D'50'%20y%3D'57'%20font-family%3D'sans-serif'%20font-weight%3D'900'%20font-size%3D'16'%20fill%3D'%23006c49'%20text-anchor%3D'middle'%3EBeerlao%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D" />
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          navigator.serviceWorker.register("./sw.js", { scope: "./" })
+            .then(function(reg) {
+              console.log("[Beerlao POS PWA] Service Worker registered. Scope:", reg.scope);
+            })
+            .catch(function(err) {
+              console.warn("[Beerlao POS PWA] Service Worker registration failed:", err);
+            });
+        });
+      }
+    </script>
 
     <!-- Google Fonts: Noto Sans Lao & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -2703,7 +2718,7 @@
         );
       };
 
-      const Header = ({ activeTab, profile, onOpenGpsModal, onQuickSync, onEditStore, onOpenGoogleSheetModal }) => {
+      const Header = ({ activeTab, profile, onOpenGpsModal, onQuickSync, onEditStore, onOpenGoogleSheetModal, onOpenInstallModal, hasInstallPrompt }) => {
         const getTabSubtitle = () => {
           switch (activeTab) {
             case 'pos-menu': return 'ລາຍການສັ່ງຊື້';
@@ -2748,6 +2763,18 @@
                 </div>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={onOpenInstallModal}
+                  className={`h-9 px-2 rounded-xl flex items-center gap-1 text-[11px] font-bold border transition-all active:scale-95 ${
+                    hasInstallPrompt
+                      ? "bg-amber-400 text-gray-950 border-amber-500 shadow-sm animate-pulse"
+                      : "bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300"
+                  }`}
+                  title="ຕິດຕັ້ງແອັບ Beerlao POS (Install PWA)"
+                >
+                  <span className="material-symbols-outlined text-[17px] text-amber-900">install_mobile</span>
+                  <span className="hidden sm:inline">ຕິດຕັ້ງແອັບ</span>
+                </button>
                 <button
                   onClick={onOpenGoogleSheetModal}
                   className="h-9 px-2.5 rounded-xl flex items-center gap-1 text-[11px] font-bold bg-[#ecfdf5] hover:bg-emerald-100 text-[#0f9d58] border border-[#a7f3d0] transition-colors active:scale-95"
@@ -3727,22 +3754,33 @@
         );
       };
 
-      const DesktopInstallModal = ({ isOpen, onClose, profile }) => {
+      const DesktopInstallModal = ({ isOpen, onClose, profile, deferredPrompt, isStandalone, onShowToast }) => {
         if (!isOpen) return null;
+
+        const handleInstallClick = async () => {
+          vibrateSoft(20);
+          if (!deferredPrompt) return;
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === "accepted") {
+            if (onShowToast) onShowToast("🎉 ກຳລັງຕິດຕັ້ງແອັບ Beerlao POS ລົງໜ້າຈໍ Android...", "success");
+            onClose();
+          }
+        };
 
         return (
           <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/65 backdrop-blur-xs animate-fadeIn">
             <div className="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-amber-500/20 flex flex-col gap-3.5 max-h-[90vh] overflow-y-auto no-scrollbar">
               <div className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shrink-0 border border-amber-300 bg-amber-400">
-                    <img src={profile.logoUrl} alt="Beerlao Icon" className="w-full h-full object-cover" />
+                  <div className="w-11 h-11 rounded-2xl overflow-hidden shadow-md shrink-0 border border-amber-300 bg-[#FFC400] flex items-center justify-center p-0.5">
+                    <img src="./icons/icon-192.png" alt="Beerlao POS Icon" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <h3 className="font-display font-black text-[16px] text-gray-900 leading-tight">
-                      ຕິດຕັ້ງແອັບລົງ Desktop
+                      ຕິດຕັ້ງແອັບ Beerlao POS
                     </h3>
-                    <p className="text-[11px] text-amber-700 font-bold">ນຳໄອຄອນ Beerlao ໄປໄວ້ໜ້າຈໍ</p>
+                    <p className="text-[11px] text-amber-700 font-bold">Progressive Web App (PWA)</p>
                   </div>
                 </div>
                 <button onClick={onClose} className="w-7 h-7 rounded-full hover:bg-gray-100 text-gray-400 flex items-center justify-center">
@@ -3751,46 +3789,66 @@
               </div>
 
               {/* Icon Preview Box */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 p-3 rounded-2xl border border-amber-200 flex items-center gap-3">
-                <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 bg-amber-400 flex items-center justify-center">
-                  <img src={profile.logoUrl} alt="App Icon" className="w-full h-full object-cover" />
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 p-3.5 rounded-2xl border border-amber-200 flex items-center gap-3">
+                <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg border-2 border-white shrink-0 bg-[#FFC400] flex items-center justify-center p-1">
+                  <img src="./icons/icon-192.png" alt="Beerlao App Icon" className="w-full h-full object-contain" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wide">ຕົວຢ່າງໄອຄອນ Desktop</span>
-                  <h4 className="font-display font-black text-[15px] text-gray-900 truncate">Beerlao POS</h4>
-                  <p className="text-[11px] text-gray-600 leading-tight">ຄລິກເປີດໃຊ້ງານໄດ້ທັນທີຄືແອັບ Desktop ແທ້</p>
+                  <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wide">ໄອຄອນທາງການ Beerlao</span>
+                  <h4 className="font-display font-black text-[16px] text-gray-900 truncate">Beerlao POS</h4>
+                  <p className="text-[11px] text-gray-600 leading-tight">ລະບົບຂາຍໜ້າຮ້ານ & ສັ່ງຊື້ Google Sheet</p>
                 </div>
               </div>
 
-              {/* Instructions for Desktop Chrome & Edge */}
+              {/* Status if already running in standalone */}
+              {isStandalone && (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 flex items-center gap-2 text-emerald-800 text-xs font-bold">
+                  <span className="material-symbols-outlined text-[18px] text-emerald-600">verified</span>
+                  <span>ທ່ານກຳລັງເປີດໃຊ້ງານໃນໂໝດແອັບ (Standalone PWA) ຮຽບຮ້ອຍແລ້ວ!</span>
+                </div>
+              )}
+
+              {/* Native 1-Click Install Button for Android Chrome */}
+              {deferredPrompt && (
+                <button
+                  type="button"
+                  onClick={handleInstallClick}
+                  className="w-full py-3 px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-2xl text-[13px] flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 active:scale-95 transition-all border border-amber-400"
+                >
+                  <span className="material-symbols-outlined text-[20px]">install_mobile</span>
+                  <span>📱 ຕິດຕັ້ງແອັບ Beerlao POS ລົງໜ້າຈໍ Android ທັນທີ</span>
+                </button>
+              )}
+
+              {/* Instructions for Android, iOS & Desktop */}
               <div className="flex flex-col gap-2.5 text-xs text-gray-700">
                 <span className="font-bold text-[#006c49] flex items-center gap-1 text-[13px]">
-                  <span className="material-symbols-outlined text-[18px]">desktop_windows</span>
-                  <span>ວິທີຕິດຕັ້ງໃນຄອມພິວເຕີ (PC / Mac):</span>
+                  <span className="material-symbols-outlined text-[18px]">phone_android</span>
+                  <span>ວິທີຕິດຕັ້ງໃນມືຖື Android (Chrome):</span>
                 </span>
                 
-                <div className="bg-[#faf8ff] p-3 rounded-2xl border border-gray-100 flex flex-col gap-2 leading-relaxed">
+                <div className="bg-amber-50/70 p-3 rounded-2xl border border-amber-200/80 flex flex-col gap-2 leading-relaxed">
                   <div className="flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-[#006c49] text-white font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">1</span>
-                    <p>ຢູ່ແຖບ URL ດ້ານເທິງຂອງ Chrome/Edge, ໃຫ້ກົດໄອຄອນ <strong>🖥️ ຕິດຕັ້ງ (Install App)</strong> ຫຼື ກົດປຸ່ມ <strong>⋮ (3 ຈຸດ) ມຸມຂວາເທິງ</strong>.</p>
+                    <p>ກົດປຸ່ມ <strong>"ຕິດຕັ້ງແອັບ"</strong> ດ້ານເທິງ ຫຼື ກົດປຸ່ມ <strong>⋮ (3 ຈຸດ) ມຸມຂວາເທິງຂອງ Chrome</strong>.</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-[#006c49] text-white font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">2</span>
-                    <p>ເລືອກເມນູ <strong>"Save and share"</strong> &gt; ກົດ <strong>"Install Beerlao POS..."</strong> (ຫຼື <strong>"Create shortcut..."</strong> ພ້ອມຕິກ <em>Open as window</em>).</p>
+                    <p>ເລືອກເມນູ <strong>"Install app (ຕິດຕັ້ງແອັບ)"</strong> ຫຼື <strong>"Add to Home screen (ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ)"</strong>.</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-[#006c49] text-white font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">3</span>
-                    <p>ໂລໂກ້ <strong>Beerlao POS</strong> ຈະໄປສະແດງຢູ່ໜ້າຈໍ <strong>Desktop</strong> ແລະ Taskbar ທັນທີ!</p>
+                    <p>ໄອຄອນ <strong>Beerlao POS</strong> ພ້ອມໂລໂກ້ເບຍລາວຈະໄປປາກົດຢູ່ໜ້າຈໍ <strong>Home Screen</strong> ແລະ <strong>App Drawer</strong> ຂອງ Android ທັນທີ!</p>
                   </div>
                 </div>
 
-                <span className="font-bold text-amber-700 flex items-center gap-1 text-[12px] pt-1">
-                  <span className="material-symbols-outlined text-[16px]">phone_iphone</span>
-                  <span>ສຳລັບໂທລະສັບມືຖື (iOS / Android):</span>
+                <span className="font-bold text-gray-800 flex items-center gap-1 text-[12px] pt-1">
+                  <span className="material-symbols-outlined text-[16px]">devices</span>
+                  <span>ສຳລັບ iPhone (iOS) & ຄອມພິວເຕີ:</span>
                 </span>
-                <p className="bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[11px] leading-snug">
+                <p className="bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-[11px] leading-snug">
                   • <strong>Safari (iPhone):</strong> ກົດປຸ່ມ Share (ແບ່ງປັນ) ດ້ານລຸ່ມ &gt; ເລືອກ <strong>"Add to Home Screen (ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ)"</strong>.<br />
-                  • <strong>Chrome (Android):</strong> ກົດປຸ່ມ ⋮ ມຸມຂວາເທິງ &gt; ເລືອກ <strong>"Add to Home Screen"</strong> ຫຼື <strong>"Install app"</strong>.
+                  • <strong>PC / Mac (Chrome/Edge):</strong> ກົດໄອຄອນ 🖥️ ຕິດຕັ້ງ (Install) ຢູ່ແຖບ URL ຫຼື ເມນູ <strong>"Save and share &gt; Install Beerlao POS"</strong>.
                 </p>
               </div>
 
@@ -3805,7 +3863,6 @@
           </div>
         );
       };
-
 
       const DashboardTab = ({ orders, products }) => {
         const [timeRange, setTimeRange] = useState('all');
@@ -6977,6 +7034,31 @@
       function App() {
         const [activeTab, setActiveTab] = useState('pos-menu');
         const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+        const [deferredPrompt, setDeferredPrompt] = useState(null);
+        const [isStandalone, setIsStandalone] = useState(false);
+
+        useEffect(() => {
+          const checkStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+          setIsStandalone(checkStandalone);
+
+          const handleBeforeInstall = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+          };
+          const handleAppInstalled = () => {
+            setIsStandalone(true);
+            setDeferredPrompt(null);
+            showToast("🎉 ແອັບ Beerlao POS ຖືກຕິດຕັ້ງລົງເຄື່ອງຮຽບຮ້ອຍແລ້ວ!", "success");
+          };
+
+          window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+          window.addEventListener("appinstalled", handleAppInstalled);
+
+          return () => {
+            window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+            window.removeEventListener("appinstalled", handleAppInstalled);
+          };
+        }, []);
         const [products, setProducts] = useState(() => {
           try {
             const saved = localStorage.getItem('lao_pos_products');
@@ -7301,6 +7383,9 @@
               isOpen={isInstallModalOpen}
               onClose={() => setIsInstallModalOpen(false)}
               profile={profile}
+              deferredPrompt={deferredPrompt}
+              isStandalone={isStandalone}
+              onShowToast={showToast}
             />
 
             <Header
@@ -7310,6 +7395,7 @@
               onOpenGpsModal={() => setIsGpsModalOpen(true)}
               onOpenGoogleSheetModal={() => { vibrateSoft(); setIsGoogleSheetModalOpen(true); }}
               onOpenInstallModal={() => { vibrateSoft(); setIsInstallModalOpen(true); }}
+              hasInstallPrompt={!!deferredPrompt && !isStandalone}
               onQuickSync={handleQuickSyncAll}
             />
 
