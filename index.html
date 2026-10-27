@@ -105,6 +105,20 @@
     </script>
 
     <style>
+      html, body {
+        height: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      #root {
+        min-height: 100%;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+      }
       body {
         font-family: 'Noto Sans Lao', system-ui, -apple-system, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -2731,8 +2745,8 @@
         };
 
         return (
-          <header className="fixed top-0 inset-x-0 z-50 bg-[#faf8ff]/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,108,73,0.06)] border-b border-emerald-900/10">
-            <div className="h-16 max-w-lg mx-auto px-4 flex items-center justify-between gap-2">
+          <header className="fixed top-0 inset-x-0 z-50 bg-[#faf8ff]/95 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,108,73,0.06)] border-b border-emerald-900/10" style={{ paddingTop: "env(safe-area-inset-top, 0px)", paddingLeft: "env(safe-area-inset-left, 0px)", paddingRight: "env(safe-area-inset-right, 0px)" }}>
+            <div className="h-14 sm:h-16 max-w-lg mx-auto px-3 sm:px-4 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <button onClick={onEditStore} className="relative group shrink-0 active:scale-95 transition-transform" title="ຕັ້ງຄ່າຮ້ານ">
                   {profile.logoUrl ? (
@@ -2806,8 +2820,8 @@
         ];
 
         return (
-          <nav className="fixed bottom-0 inset-x-0 z-40 pointer-events-none px-3 pb-3">
-            <div className="pointer-events-auto mx-auto max-w-lg bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_12px_32px_-4px_rgba(15,23,42,0.15),0_4px_12px_-2px_rgba(16,185,129,0.1)] border border-white/80 flex items-center justify-between p-1.5">
+          <nav className="fixed bottom-0 inset-x-0 z-40 pointer-events-none px-2 sm:px-3" style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))", paddingLeft: "calc(0.5rem + env(safe-area-inset-left, 0px))", paddingRight: "calc(0.5rem + env(safe-area-inset-right, 0px))" }}>
+            <div className="pointer-events-auto mx-auto max-w-lg bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_24px_-4px_rgba(15,23,42,0.12),0_2px_8px_-2px_rgba(16,185,129,0.08)] border border-white/80 flex items-center justify-between p-1 sm:p-1.5">
               {tabs.map((tab) => {
                 const isActive = activeTab === tab.id;
                 return (
@@ -2903,7 +2917,7 @@
         };
 
         return (
-          <div className="flex flex-col w-full pb-36 max-w-lg mx-auto">
+          <div className="flex flex-col w-full max-w-lg mx-auto" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}>
             <section className="px-4 pt-2 pb-2 w-full">
               <div className="flex items-baseline justify-between mb-2">
                 <div>
@@ -3344,7 +3358,7 @@
         };
 
         return (
-          <div className="flex flex-col w-full pb-32 max-w-lg mx-auto px-4 pt-2">
+          <div className="flex flex-col w-full max-w-lg mx-auto px-4 pt-2" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}>
             <input type="file" ref={cameraInputRef} accept="image/*" capture="environment" onChange={handlePhotoUpload} className="hidden" />
             <input type="file" ref={galleryInputRef} accept="image/*" onChange={handlePhotoUpload} className="hidden" />
 
@@ -3978,7 +3992,7 @@
         }, [filteredOrders, orders, products]);
 
         return (
-          <div className="flex flex-col w-full pb-36 max-w-lg mx-auto px-4 pt-2 animate-fadeIn">
+          <div className="flex flex-col w-full max-w-lg mx-auto px-4 pt-2 animate-fadeIn" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}>
             {/* Header & Sheet Quick Link */}
             <div className="flex items-center justify-between mb-3">
               <div>
@@ -5521,7 +5535,7 @@
         };
 
         return (
-          <div className="flex flex-col w-full pb-36 max-w-lg mx-auto px-4 pt-2">
+          <div className="flex flex-col w-full max-w-lg mx-auto px-4 pt-2" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}>
             <ConfirmModal
               isOpen={!!orderToDelete}
               title={`ລຶບບິນ ${orderToDelete}?`}
@@ -6423,7 +6437,7 @@
         }, [products, selectedFilterCategory]);
 
         return (
-          <div className="flex flex-col w-full pb-36 max-w-lg mx-auto px-4 pt-2">
+          <div className="flex flex-col w-full max-w-lg mx-auto px-4 pt-2" style={{ paddingBottom: "calc(4.5rem + env(safe-area-inset-bottom, 0px))" }}>
             <ConfirmModal
               isOpen={!!productToDelete}
               title={`ລຶບເມນູ "${productToDelete?.name}"?`}
@@ -7399,7 +7413,7 @@
               onQuickSync={handleQuickSyncAll}
             />
 
-            <main className="flex-1 w-full pt-16">
+            <main className="flex-1 w-full" style={{ paddingTop: "calc(3.5rem + env(safe-area-inset-top, 0px))" }}>
               {activeTab === 'pos-menu' && (
                 <MenuTab
                   products={products}
